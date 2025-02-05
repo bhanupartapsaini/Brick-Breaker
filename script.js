@@ -90,14 +90,15 @@ if(ball.y <= 0){
     ball.velocityY *= -1;
 }
 else if(ball.x <= 0|| (ball.x + ball.width) >= boardWidth){
+    ball.velocityX *= -1;
 
 }
-else if(ball.y + ball.height >= boardWidth){
+else if(ball.y + ball.height >= boardHeight){
 }
 
 //bounce the ball off player paddle
 if(topCollision(ball, player) || bottomCollision(ball, player)){
-    ball.velocityX *= -1;
+    ball.velocityY *= -1;
 } else if(leftCollision(ball, player) || rightCollision(ball, player)){
      ball.velocityX *= -1;
 }
@@ -107,6 +108,16 @@ context.fillStyle = "skyblue";
 for(let i =0; i<blockArray.length; i++){
     let block = blockArray[i];
     if(!block.break){
+        if(topCollision(ball, block) || bottomCollision(ball, block)){
+            block.break = true;
+            ball.velocityY *= -1;
+            blockCount -= 1;
+        } 
+        else if(leftCollision(ball, block) || rightCollision(ball, block)){
+            block.break = true;
+            ball.velocityX *= -1;
+            blockCount -= 1;
+        }
         context.fillRect(block.x, block.y, block.width, block.height);
     }
 }
@@ -145,13 +156,13 @@ function topCollision(ball, block){
 }
 
 function bottomCollision(ball, block){
-    return detectCollision(ball, block) && (ball.y + ball.height) >= block.y;
+    return detectCollision(ball, block) && (block.y + block.height) >= ball.y;
 }
 function leftCollision(ball, block){
     return detectCollision(ball, block) && (ball.x + ball.width) >= block.x;
 }
 function rightCollision(ball, block){
-    return detectCollision(ball, block) && (ball.x + ball.width) >= block.x;
+    return detectCollision(ball, block) && (block.x + block.width) >= ball.x;
 }
 
 
